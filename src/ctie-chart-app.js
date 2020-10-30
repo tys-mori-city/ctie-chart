@@ -2,7 +2,7 @@ import moment from "moment";
 import "lodash";
 //console.log("CtieChartApp.._", _.cloneDeep)
 
-import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
+import { PolymerElement, html } from '../node_modules/@polymer/polymer/polymer-element.js';
 import {CtieChart} from './ctie-chart.js';
 
 import {TYPES, TYPES_INDEX} from "./Model.js"

@@ -5,7 +5,7 @@
 import {Model} from "./Model.js"
 //console.log("CtieChart..Model:", Model)
 
-import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
+import { PolymerElement, html } from '../node_modules/@polymer/polymer/polymer-element.js';
 
 //import "chartjs-plugin-annotation/chartjs-plugin-annotation.js";
 

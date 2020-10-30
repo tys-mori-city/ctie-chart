@@ -1,23 +1,11 @@
-<!--
-@license
-Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
-
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <base href="/">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-
   <title>ctie-chart</title>
+<!--
   <meta name="description" content="ctie-chart Sample">
-
   <link rel="shortcut icon" sizes="32x32" href="images/shop-icon-32.png">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@Polymer">
@@ -25,10 +13,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <meta property="og:site_name" content="SHOP">
   <meta name="theme-color" content="#fff">
   <link rel="manifest" href="manifest.json">
+-->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-
   <style>
-
     body {
       margin: 0;
       font-family: 'Roboto', 'Noto', sans-serif;
@@ -85,9 +72,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 </head>
 <body>
-
   <div class="container font-small" style="max-width:100%;">
-    <h5 class="text-center" style="min-width:100%; padding-top:10px; margin-bottom:0;">観測所Web部品</h3>
+    <h5 class="text-center" style="min-width:100%; padding-top:10px; margin-bottom:0;">観測所Web部品</h5>
     <main class="p-2">
       <div class="tab-content">
         <div id="tab2" class="tab-pane center-block active">
@@ -126,17 +112,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </div>
     　</div>
     </main>
-  <div>
+  </div>
 
-  <script src="node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
-  <script type="module" src="src/ctie-chart-app.js"></script>
+  <script id="loder" src="node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+  <script id="app" type="module" src="src/ctie-chart-app.js"></script>
 
   <script>
   window.addEventListener('load',(e)=>{
-    window.performance && performance.mark && performance.mark('index.html');
-
     const app = document.querySelector('ctie-chart-app');
-
     // 表示対象切替設定
     document.querySelector('#ob-id')
     .addEventListener('change', e =>{
@@ -163,7 +146,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       debug: true,
       chertBackgroundColor: "#e2e6b0",
     };
-
     //app.setAttribute('conf', conf)
     //app.confChanged(conf)
 
