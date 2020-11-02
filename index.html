@@ -80,13 +80,15 @@
           <div class="container-fluid container-m h-100">
             <div class="row  h-100" style="background-color: #fff">
               <div class="column h-100 col-md-12 chart">
+                <ctie-chart-app></ctie-chart-app>
+                <!--
                 <ctie-chart-app
-                  debug="false"
                   api-key="Xu8MChb7YM29GgMrOanCm1Yu2HKTb6cU5cAYGVqG"
                   type="4"
                   observatory="2561_5"
                   aspect-ratio="1"
                 ></ctie-chart-app>
+                -->
               </div>
             </div>
           </div>
@@ -114,8 +116,8 @@
     </main>
   </div>
 
-  <script id="loder" src="node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
-  <script id="app" type="module" src="src/ctie-chart-app.js"></script>
+  <script src="node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+  <script type="module" src="src/ctie-chart-app.js"></script>
 
   <script>
   window.addEventListener('load',(e)=>{
@@ -124,9 +126,8 @@
     document.querySelector('#ob-id')
     .addEventListener('change', e =>{
       const [type, id] = e.target.value.split(',')
-      app.setAttributes({type: type, observatory: id})
-      // app.setAttribute('type', type)
-      // app.setAttribute('observatory', id)
+      app.setAttribute('type', type)
+      app.setAttribute('observatory', id)
     });
 
     // debugモード切替処理
