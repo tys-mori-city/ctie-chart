@@ -96,7 +96,6 @@ export class Adapter {
       if (!this.PATH.LEVEL[type]) throw new Error(`グラフデータ取得のパラメータtype[${type}]不正！`)
       if (!params.id) throw new Error(`グラフデータ取得のパラメータID：[${params.id}]指定されていない！`)
       
-console.log(type, params)
       const obser = await this.get(type, params);
       if (
         !obser.data ||

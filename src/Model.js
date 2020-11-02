@@ -1,7 +1,5 @@
-//import "https://cdn.jsdelivr.net/npm/lodash@4.17.19/lodash.js";
 import moment from "moment";
 import "lodash";
-//console.log("Module.._", _.cloneDeep)
 
 /**
  * 観測所種類の番号マップ
@@ -284,7 +282,6 @@ const CONF = {
 export class Model {
 
   constructor(tag, conf) {
-console.log("conf", conf)
     this.debug = conf.debug || false;
 
     // マスター情報格納
@@ -294,7 +291,6 @@ console.log("conf", conf)
     this.name = tag.master.name;
     // 設定情報格納
     this.conf = Object.assign(CONF[this.type], conf || {});
-console.log("conf", conf)
     // 36時間利用しない場合は表示の切替はできないようにする。
     this.conf.isShow36hours = !this.conf.canShow36hours
       ? false
@@ -414,7 +410,6 @@ console.log("conf", conf)
   }
 
   setData() {
-    // console.log(this.LEVEL_NAMES, this.conf);
     this.data = {
       // 横軸
       labels: this.labels,
@@ -423,7 +418,6 @@ console.log("conf", conf)
         this.LEVEL_NAMES,
         (buf, labels) => {
           if (this.isConfKeyOk(labels[0])) {
-            //console.log("show level:", labels[0], this.conf, ALERT_LEVEL_LIST)
             buf.push(this.getItemDataSet(labels[0]));
           }
         },
@@ -442,7 +436,7 @@ console.log("conf", conf)
    * @param {json} tag ： 観測所データ
    */
   setAlertInfos(tag) {
-    //if (this.debug) console.log("ALERT_LEVEL:",this.ALERT_LEVEL)
+    if (this.debug) console.log("ALERT_LEVEL:",this.ALERT_LEVEL)
     // マスター情報格納準備
     this.MASTER_INFO = {};
 
@@ -467,7 +461,7 @@ console.log("conf", conf)
       );
     }
 
-    //if(this.debug) console.log("this.MASTER_INFO['ALERT_LEVEL']", this.MASTER_INFO['ALERT_LEVEL'])
+    if(this.debug) console.log("this.MASTER_INFO['ALERT_LEVEL']", this.MASTER_INFO['ALERT_LEVEL'])
   }
 
   setupOption() {

@@ -1,13 +1,11 @@
 import moment from "moment";
 import "lodash";
-//console.log("CtieChartApp.._", _.cloneDeep)
 
 import { PolymerElement, html } from '../node_modules/@polymer/polymer/polymer-element.js';
 import {CtieChart} from './ctie-chart.js';
 
 import {TYPES, TYPES_INDEX} from "./Model.js"
 import {Adapter} from "./Adapter.js";
-//console.log("CtieChartApp.Model, Adapter", TYPES, Adapter)
 
 
 const SERVICE = 'https://data.riskma.net';
@@ -53,32 +51,32 @@ class CtieChartApp extends PolymerElement {
     return {
     debug: {
       type: String,
-      observer: 'debugChanged'
+      //observer: 'debugChanged'
     },
 
     "api-Key": {
       type: String,
-      observer: 'apiKeyChanged'
+      //observer: 'apiKeyChanged'
     },
 
     observatory: {
       type: String,
-      observer: 'observatoryChanged'
+      //observer: 'observatoryChanged'
     },
 
     type: {
       type: Number,
-      observer: 'typeChanged'
+      //observer: 'typeChanged'
     },
 
     height: {
       type: Number,
-      observer: 'heightChanged'
+      //observer: 'heightChanged'
     },
 
     "aspect-ratio": {
       type: Number,
-      observer: 'spectRatioChanged'
+      //observer: 'spectRatioChanged'
     }
 
   }}
@@ -94,48 +92,44 @@ class CtieChartApp extends PolymerElement {
         }
       },*/
       isShowNowTime: false,
-      debug: this.debug,
+      //debug: this.debug,
       //chertBackgroundColor: "#e2e6b0",
     };
-
   }
   
-  // ready() {
-  //   super.ready();
-  // }
-
   async connectedCallback(){
     super.connectedCallback();
-
-    this.TYPES = TYPES;//(await import("./Model.js")).TYPES;
+    //console.log("2.----------------debug:", this.debug)
+    this.TYPES = TYPES;
     this.ctieChart = this.$.ctieChart
-    this.Adapter = Adapter; //(await import("./Adapter.js")).Adapter;
+    this.Adapter = Adapter;
 
-    // 表示対象設定監視
+    // 初期表示対象設定取得
     PARAM_LIST.PARAMS.forEach((name)=>{
       const v = this.getAttr(name);
-      if (v!==null) this.params[name] = (name==='type')? Number(v) : v
+      if (v!==null && v!== undefined) this.params[name] = (name==='type')? Number(v) : v
     });
+
+    // 表示対象の切り替えなど
     this.addEventListener("paramChanged" , (e) => {
-      // 表示対象の切り替えなど
       console.log(e.type, e.detail)
     });
 
-    // 表示条件設定監視
+    // 表示条件初期設定取得
     PARAM_LIST.CONFIG.forEach((name)=>{
       const v = this.getAttr(name);
-      if (v!==null) this.conf[name] = (name==='debug')?  Boolean(v) : v
+      if (v!==null && v!== undefined) this.conf[name] = (name==='debug')?  v === 'true' : v
     });
+
+    this.debug = this.conf['debug']
+
+    // 描画設定変更、画面再表示
     this.addEventListener("configChanged" , (e) => {
-      // 描画設定変更、画面再表示
       console.log(e.type, e.detail)
     });
+
     // グラフ初期化
     await this.setUpChart()
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
-    console.log(CtieChartApp.is, "attributeChangedCallback : ", name, oldValue, newValue)
   }
 
   async setUpChart(changName) {
@@ -193,23 +187,25 @@ class CtieChartApp extends PolymerElement {
 
   }
 
-  // ready() {
-  //   super.ready();
-  //   console.log(CtieChartApp.is, " ready", moment)
-  // }
+  attributeChangedCallback(name, oldValue, newValue) {
+    if(this.debug) {
+      console.log(CtieChartApp.is, "attributeChangedCallback : ", name, oldValue, newValue)
+      this.changedEvent(name, newValue, oldValue)
+    }
+  }
 
-  confChanged(newValue, oldValue){
+  confChanged(name, newValue, oldValue){
     this.popupEvent('conf', newValue)
     this.$.ctieChart.setAttribute('conf', newValue)
     this.conf = newValue
   }
 
-  debugChanged(newValue, oldValue){this.changedEvent('debug', newValue, oldValue)}
-  apiKeyChanged(newValue, oldValue){this.changedEvent('apiKey', newValue, oldValue)}
-  observatoryChanged(newValue, oldValue){this.changedEvent('observatory', newValue, oldValue)}
-  typeChanged(newValue, oldValue){this.changedEvent('type', newValue, oldValue)}
-  heightChanged(newValue, oldValue){this.changedEvent('height', newValue, oldValue)}
-  spectRatioChanged(newValue, oldValue){this.changedEvent('aspectRatio', newValue, oldValue)}
+  // debugChanged(newValue, oldValue){this.changedEvent('debug', newValue, oldValue)}
+  // apiKeyChanged(newValue, oldValue){this.changedEvent('apiKey', newValue, oldValue)}
+  // observatoryChanged(newValue, oldValue){this.changedEvent('observatory', newValue, oldValue)}
+  // typeChanged(newValue, oldValue){this.changedEvent('type', newValue, oldValue)}
+  // heightChanged(newValue, oldValue){this.changedEvent('height', newValue, oldValue)}
+  // spectRatioChanged(newValue, oldValue){this.changedEvent('aspectRatio', newValue, oldValue)}
 
   changedEvent(name, newValue, oldValue){
     if (PARAM_LIST.PARAMS.includes(name)) {
@@ -245,8 +241,8 @@ class CtieChartApp extends PolymerElement {
   }
 
   popupEvent(name, status){
-console.log('ctie-chart-app.popupEvent:', name, status)
-    this.dispatchEvent(new CustomEvent(name, {
+    if(this.debug) console.log('ctie-chart-app.popupEvent:', name, status)
+    if(this.debug) this.dispatchEvent(new CustomEvent(name, {
       detail: {[name]: status}
     }));
   }

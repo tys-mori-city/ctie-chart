@@ -1,13 +1,5 @@
-//import "chart.js";
-// console.log("CtieChart..Chart:", Chart)
-// window.Chart = Chart;
-
 import {Model} from "./Model.js"
-//console.log("CtieChart..Model:", Model)
-
 import { PolymerElement, html } from '../node_modules/@polymer/polymer/polymer-element.js';
-
-//import "chartjs-plugin-annotation/chartjs-plugin-annotation.js";
 
 export class CtieChart extends PolymerElement {
   
@@ -36,15 +28,10 @@ export class CtieChart extends PolymerElement {
 
   static get is() { return 'ctie-chart'; }
 
-  // ready() {
-  //   super.ready();
-  // }
-
   async connectedCallback(){
     super.connectedCallback()
     await import("chart.js");
     await import("chartjs-plugin-annotation/chartjs-plugin-annotation.js");
-    console.log(CtieChart.is, " connected")
   }
 
   async setModel(contents, conf) {
@@ -55,7 +42,6 @@ export class CtieChart extends PolymerElement {
       this.aspectRatio = this.conf.aspectRatio
     }
 
-    //const Model = (await import("./Model.js")).Model;
     const model = this.model = new Model(contents, this.conf)
     const seting = model.getConfig();
     if (this.aspectRatio){
@@ -77,7 +63,6 @@ export class CtieChart extends PolymerElement {
   }
 
   popupEvent(name, status){
-    // console.log('ctie-chart', name, status)
     this.dispatchEvent(new CustomEvent(name, {
       detail: {[name]: status}
     }));

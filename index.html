@@ -80,8 +80,16 @@
           <div class="container-fluid container-m h-100">
             <div class="row  h-100" style="background-color: #fff">
               <div class="column h-100 col-md-12 chart">
-                <ctie-chart-app></ctie-chart-app>
+                <ctie-chart-app
+                  api-key="Xu8MChb7YM29GgMrOanCm1Yu2HKTb6cU5cAYGVqG"
+                  type="4"
+                  observatory="2561_5"
+                  aspect-ratio="1"
+                  debug="false"
+                ></ctie-chart-app>
                 <!--
+                <ctie-chart-app></ctie-chart-app>
+
                 <ctie-chart-app
                   api-key="Xu8MChb7YM29GgMrOanCm1Yu2HKTb6cU5cAYGVqG"
                   type="4"
@@ -108,7 +116,10 @@
         <div class="container">
           <form>
           <div class="form-check">
+            <!--
             <input class="form-check-input" type="checkbox" id="debugCheck" checked>
+            -->
+            <input class="form-check-input" type="checkbox" id="debugCheck">
             <label class="form-check-label" for="debugCheck">ディバックモード</label>
           </div>                
         </div>
@@ -122,7 +133,26 @@
   <script>
   window.addEventListener('load',(e)=>{
     const app = document.querySelector('ctie-chart-app');
+
+    // -------------------- //
+    // 初期設定
+    // -------------------- //
+    var debugCheck = document.querySelector("#debugCheck");
+    if(debugCheck) {
+      app.setAttribute("debug", debugCheck.checked);
+      debugCheck.addEventListener("change", function (e) {
+        app.setAttribute("debug", e.target.checked);
+      });
+    }
+
+    // 状況受け取る：
+    app.addEventListener('status' ,(e)=>{console.log('status' , e.detail.status)})
+    app.addEventListener('painted',(e)=>{console.log('painted', e.detail.painted)})
+    app.addEventListener('error'  ,(e)=>{console.log('error'  , e.target, e.detail.error)})
+
+    // -------------------- //
     // 表示対象切替設定
+    // -------------------- //
     document.querySelector('#ob-id')
     .addEventListener('change', e =>{
       const [type, id] = e.target.value.split(',')
@@ -130,12 +160,6 @@
       app.setAttribute('observatory', id)
     });
 
-    // debugモード切替処理
-    const debugCheck = document.querySelector('#debugCheck')
-    debugCheck.addEventListener('change', e =>{
-      app.setAttribute('debug', e.target.checked)
-    });
-    app.setAttribute('debug', debugCheck.checked)
 
     const conf = {
       COLOR:{
