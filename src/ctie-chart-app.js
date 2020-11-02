@@ -200,7 +200,7 @@ class CtieChartApp extends PolymerElement {
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue) return;
     
-    if (PARAM_LIST.PARAMS.includes(name)) {
+    if (PARAM_LIST.PARAMS.indexOf(name)>=0) {
       if (_.isNil(newValue)) {
         if (this.params[name]) delete this.params[name]
       } else {
@@ -227,7 +227,7 @@ class CtieChartApp extends PolymerElement {
     }
 
     const key = CONFIG_INDEX[name]? CONFIG_INDEX[name] : name;
-    if (PARAM_LIST.CONFIG.includes(key)) {
+    if (PARAM_LIST.CONFIG.indexOf(key)>=0) {
       if (_.isNil(newValue)) {
         if (this.conf[name]) delete this.conf[name]
       } else {

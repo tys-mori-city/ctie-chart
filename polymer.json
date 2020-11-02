@@ -2,9 +2,7 @@
   "entrypoint": "index.html",
   "shell": "src/ctie-chart-app.js",
   "sources": [
-    "data/**/*",
-    "images/**/*",
-    "ctie-hart-app.js",
+    "ctie-chart-app.js",
     "script1.js",
     "script2.js",
     "script3.js",
