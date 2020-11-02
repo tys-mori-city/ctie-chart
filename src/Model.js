@@ -436,7 +436,7 @@ export class Model {
    * @param {json} tag ： 観測所データ
    */
   setAlertInfos(tag) {
-    if (this.debug) console.log("ALERT_LEVEL:",this.ALERT_LEVEL)
+    //if (this.debug) console.log("ALERT_LEVEL:",this.ALERT_LEVEL)
     // マスター情報格納準備
     this.MASTER_INFO = {};
 
@@ -461,7 +461,7 @@ export class Model {
       );
     }
 
-    if(this.debug) console.log("this.MASTER_INFO['ALERT_LEVEL']", this.MASTER_INFO['ALERT_LEVEL'])
+    //if(this.debug) console.log("this.MASTER_INFO['ALERT_LEVEL']", this.MASTER_INFO['ALERT_LEVEL'])
   }
 
   setupOption() {

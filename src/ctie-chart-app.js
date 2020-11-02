@@ -13,6 +13,14 @@ const PARAM_LIST = {
   'PARAMS':['observatory', 'date', 'type'],
   'CONFIG':['apiKey', 'debug', 'height', 'aspectRatio']
 };
+const CONFIG_MAP = {
+  apiKey: 'api-key',
+  aspectRatio: 'aspect-ratio'
+};
+const CONFIG_INDEX = {
+  'api-key': 'apiKey',
+  'aspect-ratio': 'aspectRatio'
+};
 
 
 class CtieChartApp extends PolymerElement {
@@ -99,7 +107,6 @@ class CtieChartApp extends PolymerElement {
   
   async connectedCallback(){
     super.connectedCallback();
-    //console.log("2.----------------debug:", this.debug)
     this.TYPES = TYPES;
     this.ctieChart = this.$.ctieChart
     this.Adapter = Adapter;
@@ -112,20 +119,20 @@ class CtieChartApp extends PolymerElement {
 
     // 表示対象の切り替えなど
     this.addEventListener("paramChanged" , (e) => {
-      console.log(e.type, e.detail)
+      this.paramChanged(e.detail.name, e.detail.newValue, e.detail.oldValue);
+
     });
 
     // 表示条件初期設定取得
     PARAM_LIST.CONFIG.forEach((name)=>{
-      const v = this.getAttr(name);
+      const keys = CONFIG_MAP;
+      const v = this.getAttr(keys[name]? keys[name] : name);
       if (v!==null && v!== undefined) this.conf[name] = (name==='debug')?  v === 'true' : v
     });
 
-    this.debug = this.conf['debug']
-
     // 描画設定変更、画面再表示
     this.addEventListener("configChanged" , (e) => {
-      console.log(e.type, e.detail)
+      this.confChanged(e.detail.name, e.detail.newValue, e.detail.oldValue);
     });
 
     // グラフ初期化
@@ -133,31 +140,38 @@ class CtieChartApp extends PolymerElement {
   }
 
   async setUpChart(changName) {
+    // 通信環境チェック
     if (!this.setUpAdapter()) return
+
+    // 表示設定チェック
     if (!this.params['observatory'] || !this.params['type'] ) {
       this.popupEvent('status', 'グラフ作成に必要な属性は設定されていません。グラフ表示中断されます。')
       return
     }
-
-    if (!this.params['date']) this.params['date'] = moment().utc().format('YYYYMMDDHHmm')
-    const canvas = this.ctieChart.querySelector('canvas')
-    if (changName==='height') {
-      if (this.conf.height) {
-        canvas.setAttribute('height', this.height)
-        return;
-      }
-    } else if (changName==='aspectRatio') {
-      if (this.conf.aspectRatio) {
-        this.ctieChart.setAspectRatio(this.aspectRatio)
-        return;
-      }
-    }
-
     if (!TYPES_INDEX[this.params['type']]) {
       throw new Error(`観測所種類不正！ type:${this.params['type']}`)
     }
 
-    this.popupEvent('status', 'checked attributes')
+    if (!this.params['date']) {
+      this.params['date'] = moment().utc().format('YYYYMMDDHHmm')
+      this.popupEvent('status', 'not found data and add it.')
+    }
+
+    // レイアウト変更時の対応
+    const canvas = this.ctieChart.querySelector('canvas')
+    if (changName==='height') {
+      if (this.conf.height) {
+        canvas.setAttribute('height', this.conf.height)
+        return;
+      }
+    } else if (changName==='aspectRatio') {
+      if (this.conf.aspectRatio) {
+        this.ctieChart.setAspectRatio(this.conf.aspectRatio)
+        return;
+      }
+    }
+
+    this.popupEvent('status', 'checked attributes OK')
 
     try {
       const startTime = moment()
@@ -175,12 +189,8 @@ class CtieChartApp extends PolymerElement {
       await this.ctieChart.setModel(data, this.conf);
       this.popupEvent('status', 'グラフ表示まで：' + moment().diff(startTime, "milliseconds")+' ミリ秒')
 
-      if (this.height) {
-        canvas.setAttribute('height', this.height)
-      }
-
     } catch (error) {
-      if (this.debug) console.log(error);
+      if (this.conf.debug) console.log(error);
       throw error
     }
     this.popupEvent('painted', 'OK')
@@ -188,46 +198,40 @@ class CtieChartApp extends PolymerElement {
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
-    if(this.debug) {
-      console.log(CtieChartApp.is, "attributeChangedCallback : ", name, oldValue, newValue)
-      this.changedEvent(name, newValue, oldValue)
-    }
-  }
-
-  confChanged(name, newValue, oldValue){
-    this.popupEvent('conf', newValue)
-    this.$.ctieChart.setAttribute('conf', newValue)
-    this.conf = newValue
-  }
-
-  // debugChanged(newValue, oldValue){this.changedEvent('debug', newValue, oldValue)}
-  // apiKeyChanged(newValue, oldValue){this.changedEvent('apiKey', newValue, oldValue)}
-  // observatoryChanged(newValue, oldValue){this.changedEvent('observatory', newValue, oldValue)}
-  // typeChanged(newValue, oldValue){this.changedEvent('type', newValue, oldValue)}
-  // heightChanged(newValue, oldValue){this.changedEvent('height', newValue, oldValue)}
-  // spectRatioChanged(newValue, oldValue){this.changedEvent('aspectRatio', newValue, oldValue)}
-
-  changedEvent(name, newValue, oldValue){
+    if (oldValue === newValue) return;
+    
     if (PARAM_LIST.PARAMS.includes(name)) {
       if (_.isNil(newValue)) {
         if (this.params[name]) delete this.params[name]
       } else {
         this.params[name] = newValue
       }
-      this.dispatchEvent(new CustomEvent('paramChanged', {
-        detail: {
-          name: name,
-          newValue: newValue,
-          oldValue: oldValue
-        }
-      }));
+
+      // 複数要素変更を一括更新
+      // if (this.resizeTimeout) clearTimeout(this.resizeTimeout);
+
+      // 変更を反映
+      // this.resizeTimeout = window.setTimeout(
+        this.dispatchEvent(
+          new CustomEvent('paramChanged',
+          {
+            detail: {
+              name: name,
+              newValue: newValue,
+              oldValue: oldValue
+            }
+          })
+        )//, 200
+      // );
+
     }
 
-    if (PARAM_LIST.CONFIG.includes(name)) {
+    const key = CONFIG_INDEX[name]? CONFIG_INDEX[name] : name;
+    if (PARAM_LIST.CONFIG.includes(key)) {
       if (_.isNil(newValue)) {
         if (this.conf[name]) delete this.conf[name]
       } else {
-        this.conf[name] = newValue
+        this.conf[name] = (name==='debug')?  newValue === 'true' : newValue
       }
       this.dispatchEvent(new CustomEvent('configChanged', {
         detail: {
@@ -240,16 +244,29 @@ class CtieChartApp extends PolymerElement {
 
   }
 
+  confChanged(name, newValue, oldValue){
+    const key = CONFIG_INDEX[name]? CONFIG_INDEX[name] : name;
+    this.popupEvent('status', `confChanged[ ${key}: from ${oldValue} to ${newValue}]`)
+    if (name === 'api-key') this.adapter = null
+    this.setUpChart(name)
+  }
+
+  paramChanged(name, newValue, oldValue){
+    this.popupEvent('status', `paramChanged[ ${name}: from ${oldValue} to ${newValue}]`)
+    this.setUpChart(name)
+  }
+
   popupEvent(name, status){
-    if(this.debug) console.log('ctie-chart-app.popupEvent:', name, status)
-    if(this.debug) this.dispatchEvent(new CustomEvent(name, {
-      detail: {[name]: status}
-    }));
+    //if(this.conf['debug']) console.log('ctie-chart-app.popupEvent:', name, status, this.conf['debug'])
+    if (this.conf['debug'] || name === 'error' || name === 'painted' ) {
+      this.dispatchEvent(new CustomEvent(name, {
+        detail: {[name]: status}
+      }));
+    }
   }
 
 
   setUpAdapter() {
-    this.conf.apiKey = this.getAttr('api-key');
     if (_.isNil(this.conf.apiKey)) {
       this.popupEvent('error', 'error at connect to data service by no apiKey')
       return false
@@ -260,7 +277,7 @@ class CtieChartApp extends PolymerElement {
     try {
       this.adapter = new this.Adapter(SERVICE, this.conf.apiKey);
     } catch (error) {
-      if (this.debug) console.log(error);
+      if (this.conf.debug) console.log(error);
       this.popupEvent('error', 'error at connect to data service['+ error.message +']')
       return false
     }

@@ -3,7 +3,12 @@
   "shell": "src/ctie-chart-app.js",
   "sources": [
     "data/**/*",
-    "images/**/*"
+    "images/**/*",
+    "ctie-hart-app.js",
+    "script1.js",
+    "script2.js",
+    "script3.js",
+    "favicon.ico"
   ],
   "extraDependencies": [
     "manifest.json",
