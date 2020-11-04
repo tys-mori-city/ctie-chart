@@ -1,8 +1,8 @@
-# SHOP
+# CTIE-CHART
 
-Shop is a sample e-commerce [Progressive Web App](https://developers.google.com/web/progressive-web-apps/).
+観測所グラフ [CTIE-CHART Web App](https://github.com/CTIE-TOKYO-MIZU/CTIE-TOKYO-MIZU.github.io).
 
-![shop screenshot](https://user-images.githubusercontent.com/116360/39545341-c50a9184-4e05-11e8-88e0-0e1f3fa4834b.png)
+![chart screenshot](./images/sample.png)
 
 ## Features/highlights
 
