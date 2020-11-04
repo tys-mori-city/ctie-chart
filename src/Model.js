@@ -869,7 +869,8 @@ export class Model {
           ctx.fillText(
             "T.P.",
             xAxe.left,
-            yAxe.top - text.actualBoundingBoxDescent - text.actualBoundingBoxAscent
+            //yAxe.top - text.actualBoundingBoxDescent - text.actualBoundingBoxAscent
+            yAxe.top - text.width
           );
         }
       },
