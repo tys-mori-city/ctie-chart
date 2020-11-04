@@ -4,16 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <title>ctie-chart</title>
-<!--
-  <meta name="description" content="ctie-chart Sample">
-  <link rel="shortcut icon" sizes="32x32" href="images/shop-icon-32.png">
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:site" content="@Polymer">
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="SHOP">
-  <meta name="theme-color" content="#fff">
-  <link rel="manifest" href="manifest.json">
--->
+  <link rel="icon" href="./favicon.ico">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
   <style>
     body {
@@ -105,7 +96,7 @@
         <select class="browser-default custom-select mb-4" id="ob-id">
           <option value="" selected style="background-color: #e4e2e2;" disabled>必須選択...</option>
           <option value="4,22829_3">22829_3 水位、欠測</option>
-          <option value="4,21782_2_">21782_2_ 水位、断面有</option>
+          <option value="4,21782_2_">存在しない場合！</option>
           <option value="4,2561_5">  2561_5 水位、断面無</option>
           <option value="4,21782_3">21782_3 水位、断面有</option>
           <option value="4,22061_2">22061_2 水位、断面有</option>
@@ -131,8 +122,8 @@
   <script type="module" src="src/ctie-chart-app.js"></script>
 
   <script>
-  window.addEventListener('load',(e)=>{
-    const app = document.querySelector('ctie-chart-app');
+  window.addEventListener('load',function(e){
+    var app = document.querySelector('ctie-chart-app');
 
     // -------------------- //
     // 初期設定
@@ -146,16 +137,18 @@
     }
 
     // 状況受け取る：
-    app.addEventListener('status' ,(e)=>{console.log('status' , e.detail.status)})
-    app.addEventListener('painted',(e)=>{console.log('painted', e.detail.painted)})
-    app.addEventListener('error'  ,(e)=>{console.log('error'  , e.target, e.detail.error)})
+    app.addEventListener('status' ,function(e){console.log('status' , e.detail.status)})
+    app.addEventListener('painted',function(e){console.log('painted', e.detail.painted)})
+    app.addEventListener('error'  ,function(e){console.log('error'  , e.target, e.detail.error)})
 
     // -------------------- //
     // 表示対象切替設定
     // -------------------- //
     document.querySelector('#ob-id')
-    .addEventListener('change', e =>{
-      const [type, id] = e.target.value.split(',')
+    .addEventListener('change', function(e){
+      var selected = e.target.value.split(','),
+      type = selected[0],
+      id   = selected[1];
       app.setAttribute('type', type)
       app.setAttribute('observatory', id)
     });

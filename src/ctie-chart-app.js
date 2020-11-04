@@ -103,6 +103,7 @@ class CtieChartApp extends PolymerElement {
       //debug: this.debug,
       //chertBackgroundColor: "#e2e6b0",
     };
+    this.connected = false
   }
   
   async connectedCallback(){
@@ -120,7 +121,6 @@ class CtieChartApp extends PolymerElement {
     // 表示対象の切り替えなど
     this.addEventListener("paramChanged" , (e) => {
       this.paramChanged(e.detail.name, e.detail.newValue, e.detail.oldValue);
-
     });
 
     // 表示条件初期設定取得
@@ -136,7 +136,8 @@ class CtieChartApp extends PolymerElement {
     });
 
     // グラフ初期化
-    await this.setUpChart()
+    await this.setUpChart();
+    this.connected = true
   }
 
   async setUpChart(changName) {
@@ -197,7 +198,8 @@ class CtieChartApp extends PolymerElement {
 
   }
 
-  attributeChangedCallback(name, oldValue, newValue) {
+  async attributeChangedCallback(name, oldValue, newValue) {
+    if (!this.connected) return;
     if (oldValue === newValue) return;
     
     if (PARAM_LIST.PARAMS.indexOf(name)>=0) {
@@ -208,10 +210,13 @@ class CtieChartApp extends PolymerElement {
       }
 
       // 複数要素変更を一括更新
-      // if (this.resizeTimeout) clearTimeout(this.resizeTimeout);
+      if (this.researchTimeout) {
+        clearTimeout(this.researchTimeout);
+        this.researchTimeout = null
+      }
 
       // 変更を反映
-      // this.resizeTimeout = window.setTimeout(
+      this.researchTimeout = window.setTimeout( ()=>{
         this.dispatchEvent(
           new CustomEvent('paramChanged',
           {
@@ -221,8 +226,8 @@ class CtieChartApp extends PolymerElement {
               oldValue: oldValue
             }
           })
-        )//, 200
-      // );
+        )}, 200
+      );
 
     }
 
@@ -244,16 +249,17 @@ class CtieChartApp extends PolymerElement {
 
   }
 
-  confChanged(name, newValue, oldValue){
+  async confChanged(name, newValue, oldValue){
+    if (newValue == oldValue) return
     const key = CONFIG_INDEX[name]? CONFIG_INDEX[name] : name;
     this.popupEvent('status', `confChanged[ ${key}: from ${oldValue} to ${newValue}]`)
     if (name === 'api-key') this.adapter = null
-    this.setUpChart(name)
+    await this.setUpChart(name)
   }
 
-  paramChanged(name, newValue, oldValue){
+  async paramChanged(name, newValue, oldValue){
     this.popupEvent('status', `paramChanged[ ${name}: from ${oldValue} to ${newValue}]`)
-    this.setUpChart(name)
+    await this.setUpChart(name)
   }
 
   popupEvent(name, status){
