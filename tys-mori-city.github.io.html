@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>ctie-chart</title>
+  <link rel="icon" href="./favicon.ico">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Roboto', 'Noto', sans-serif;
+      font-size: 13px;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* styling for render while resources are loading */
+    shop-app[unresolved] {
+      display: block;
+      min-height: 101vh;
+      line-height: 68px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.3em;
+      color: #202020;
+      padding: 0 16px;
+      overflow: visible;
+    }
+
+    main,
+    select.mb-4,
+    main label {
+      font-size: 1rem;
+    }
+    .tab-content {
+      background-color: #e4e2e2;
+      /*margin: 5px;*/
+      padding: 10px;
+    }
+    main {
+      display: flex;
+      flex-direction: column;
+    }
+    main>div {
+      display: flex;
+      flex-direction: column;
+    }
+    main>div main>div>div {
+      flex: 1;
+    }
+    .chart{
+      padding:0px;
+    }
+    form.p-5 {
+      padding-top:0;
+      background-color: #e4e2e2;
+    }
+    #success_message{ display: none;}
+
+  </style>
+
+</head>
+<body>
+  <div class="container font-small" style="max-width:100%;">
+    <h5 class="text-center" style="min-width:100%; padding-top:10px; margin-bottom:0;">観測所Web部品</h5>
+    <main class="p-2">
+      <div class="tab-content">
+        <div id="tab2" class="tab-pane center-block active">
+          <div class="container-fluid container-m h-100">
+            <div class="row  h-100" style="background-color: #fff">
+              <div class="column h-100 col-md-12 chart">
+                <ctie-chart-app
+                  api-key="Xu8MChb7YM29GgMrOanCm1Yu2HKTb6cU5cAYGVqG"
+                  type="4"
+                  observatory="21320_97"
+                  aspect-ratio1="1.5"
+                  debug="true"
+                ></ctie-chart-app>
+                <!--
+                <ctie-chart-app></ctie-chart-app>
+
+                <ctie-chart-app
+                  api-key="Xu8MChb7YM29GgMrOanCm1Yu2HKTb6cU5cAYGVqG"
+                  type="4"
+                  observatory="2561_5"
+                  aspect-ratio="1"
+                ></ctie-chart-app>
+                -->
+              </div>
+            </div>
+          </div>
+        </div>
+        <label>観測所切替</label>
+        <select class="browser-default custom-select mb-4" id="ob-id">
+          <option value="" selected style="background-color: #e4e2e2;" disabled>必須選択...</option>
+          <option value="4,22829_3">22829_3 水位、欠測</option>
+          <option value="4,21782_2_">存在しない場合！</option>
+          <option value="4,2561_5">  2561_5 水位、断面無</option>
+          <option value="4,21782_3">21782_3 水位、断面有</option>
+          <option value="4,22061_2">22061_2 水位、断面有</option>
+          <option value="1,20817_3">20817_3 雨量</option>
+          <option value="7,22061_3">22061_3 ダム</option>
+          <option value="4,21556_1">愛本 水位、断面有</option>
+        </select>
+        <div class="container">
+          <form>
+          <div class="form-check">
+            <!--
+            <input class="form-check-input" type="checkbox" id="debugCheck" checked>
+            -->
+            <input class="form-check-input" type="checkbox" id="debugCheck">
+            <label class="form-check-label" for="debugCheck">ディバックモード</label>
+          </div>                
+        </div>
+    　</div>
+    </main>
+  </div>
+
+  <script data-v-309fa5e1 src="https://ctie-tokyo-mizu.github.io/dist/ctie-chart-app.js"></script>
+
+  <script>
+  window.addEventListener('load',function(e){
+    var app = document.querySelector('ctie-chart-app');
+
+    // -------------------- //
+    // 初期設定
+    // -------------------- //
+    var debugCheck = document.querySelector("#debugCheck");
+    if(debugCheck) {
+      app.setAttribute("debug", debugCheck.checked);
+      debugCheck.addEventListener("change", function (e) {
+        app.setAttribute("debug", e.target.checked);
+      });
+    }
+
+    // 状況受け取る：
+    app.addEventListener('status' ,function(e){console.log('status' , e.detail.status)})
+    app.addEventListener('painted',function(e){console.log('painted', e.detail.painted)})
+    app.addEventListener('error'  ,function(e){console.log('error'  , e.target, e.detail.error)})
+
+    // -------------------- //
+    // 表示対象切替設定
+    // -------------------- //
+    document.querySelector('#ob-id')
+    .addEventListener('change', function(e){
+      var selected = e.target.value.split(','),
+      type = selected[0],
+      id   = selected[1];
+      app.setAttribute('type', type)
+      app.setAttribute('observatory', id)
+    });
+
+
+    const conf = {
+      COLOR:{
+        levels:{
+          MEASURED: 'red'
+        }
+      },
+      isShowNowTime: false,
+      debug: true,
+      chertBackgroundColor: "#e2e6b0",
+    };
+    //app.setAttribute('conf', conf)
+    //app.confChanged(conf)
+
+  })
+  </script>
+
+</body>
+</html>
